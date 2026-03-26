@@ -4,14 +4,9 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
  
-/**
- * Central theme registry.
- * Every color, font, and styled-component factory lives here.
- * Change one thing here and it ripples through the whole app.
- */
 public class AppTheme {
  
-    // ── Colours ────────────────────────────────────────────────────────────
+   
     public static final Color BG_DARK         = new Color(18, 18, 24);
     public static final Color BG_PANEL        = new Color(28, 28, 38);
     public static final Color BG_CARD         = new Color(36, 36, 50);
@@ -33,7 +28,7 @@ public class AppTheme {
     public static final Color TEXT_SECONDARY  = new Color(160, 160, 185);
     public static final Color TEXT_MUTED      = new Color(100, 100, 130);
  
-    // ── Fonts ──────────────────────────────────────────────────────────────
+   
     public static final Font FONT_TITLE    = new Font("Segoe UI", Font.BOLD,  22);
     public static final Font FONT_HEADING  = new Font("Segoe UI", Font.BOLD,  16);
     public static final Font FONT_SUBHEAD  = new Font("Segoe UI", Font.BOLD,  13);
@@ -41,8 +36,7 @@ public class AppTheme {
     public static final Font FONT_LABEL    = new Font("Segoe UI", Font.PLAIN, 12);
     public static final Font FONT_SMALL    = new Font("Segoe UI", Font.PLAIN, 11);
     public static final Font FONT_MONO     = new Font("Consolas",  Font.PLAIN, 12);
- 
-    // ── Component factories ────────────────────────────────────────────────
+
  
     public static JTextField styledField(int cols) {
         JTextField f = new JTextField(cols);

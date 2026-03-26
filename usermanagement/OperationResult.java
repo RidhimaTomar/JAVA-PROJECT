@@ -1,8 +1,6 @@
-package usermanagement;
- 
+package usermanagement; 
 import model.User;
- 
-/** Returned by every user-management operation (register, suspend, etc). */
+
 public class OperationResult {
  
     private final boolean success;

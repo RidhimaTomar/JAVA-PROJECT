@@ -7,12 +7,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Handles all DB reads/writes for documents, attempts, and results.
- */
+
 public class DocumentRepository {
 
-    // ── Documents ────────────────────────────────────────────────────────
+    
 
     public int saveDocument(int submittedBy, String docType, String docNumber,
                             String holderName, String dob) throws SQLException {
@@ -64,7 +62,7 @@ public class DocumentRepository {
         }
     }
 
-    // ── Attempts ─────────────────────────────────────────────────────────
+    
 
     public int logAttempt(int docId, int userId) throws SQLException {
         int next = getAttemptCount(docId) + 1;
@@ -105,7 +103,7 @@ public class DocumentRepository {
         return 0;
     }
 
-    // ── Results ───────────────────────────────────────────────────────────
+    
 
     public void saveResult(int attemptId, int docId, String status,
                            String reason, String failedRule) throws SQLException {
@@ -123,8 +121,7 @@ public class DocumentRepository {
         }
     }
 
-    // ── Dashboard data ────────────────────────────────────────────────────
-
+    
     public List<VerificationSummary> getRecentResults(int limit) throws SQLException {
         String sql = "SELECT d.doc_type, d.doc_number, d.holder_name, "
                    + "vr.status, vr.rejection_reason, vr.verified_at "

@@ -2,15 +2,12 @@ package model;
 
 import java.time.LocalDateTime;
 
-/**
- * A lightweight summary of one verification result — used in the dashboard table.
- */
 public class VerificationSummary {
 
     private String        docType;
     private String        docNumber;
     private String        holderName;
-    private String        status;          // "PASSED" or "FAILED"
+    private String        status;         
     private String        rejectionReason;
     private LocalDateTime verifiedAt;
 

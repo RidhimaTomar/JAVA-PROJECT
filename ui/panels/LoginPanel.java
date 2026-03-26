@@ -9,11 +9,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
- 
-/**
- * The first screen — a simple, centred login card.
- * Uses a SwingWorker so the UI doesn't freeze while the DB call runs.
- */
+
 public class LoginPanel extends JPanel {
  
     private final UserService userService;
@@ -46,7 +42,6 @@ public class LoginPanel extends JPanel {
         c.weightx = 1;
         c.gridx   = 0;
  
-        // ── Brand ──────────────────────────────────────────────────────── //
         JLabel logo = new JLabel("DocVerify", SwingConstants.CENTER);
         logo.setFont(new Font("Segoe UI", Font.BOLD, 32));
         logo.setForeground(AppTheme.ACCENT_INDIGO);
@@ -58,8 +53,7 @@ public class LoginPanel extends JPanel {
         tagline.setForeground(AppTheme.TEXT_MUTED);
         c.gridy = 1; c.insets = new Insets(0, 0, 36, 0);
         card.add(tagline, c);
- 
-        // ── Username ───────────────────────────────────────────────────── //
+
         c.insets = new Insets(0, 0, 4, 0);
         c.gridy  = 2;
         card.add(AppTheme.formLabel("Username"), c);
@@ -69,7 +63,6 @@ public class LoginPanel extends JPanel {
         c.gridy = 3; c.insets = new Insets(0, 0, 16, 0);
         card.add(usernameField, c);
  
-        // ── Password ───────────────────────────────────────────────────── //
         c.gridy = 4; c.insets = new Insets(0, 0, 4, 0);
         card.add(AppTheme.formLabel("Password"), c);
  
@@ -77,21 +70,17 @@ public class LoginPanel extends JPanel {
         passwordField.setPreferredSize(new Dimension(320, 42));
         c.gridy = 5; c.insets = new Insets(0, 0, 8, 0);
         card.add(passwordField, c);
- 
-        // ── Error message ──────────────────────────────────────────────── //
         errorLabel = new JLabel(" ", SwingConstants.CENTER);
         errorLabel.setFont(AppTheme.FONT_SMALL);
         errorLabel.setForeground(AppTheme.ACCENT_RED);
         c.gridy = 6; c.insets = new Insets(0, 0, 12, 0);
         card.add(errorLabel, c);
  
-        // ── Sign-in button ─────────────────────────────────────────────── //
         loginBtn = AppTheme.primaryButton("Sign In");
         loginBtn.setPreferredSize(new Dimension(320, 44));
         c.gridy = 7; c.insets = new Insets(0, 0, 24, 0);
         card.add(loginBtn, c);
  
-        // ── Hint ───────────────────────────────────────────────────────── //
         JLabel hint = new JLabel("Default credentials: admin / Admin@123", SwingConstants.CENTER);
         hint.setFont(AppTheme.FONT_SMALL);
         hint.setForeground(AppTheme.TEXT_MUTED);
@@ -99,8 +88,6 @@ public class LoginPanel extends JPanel {
         card.add(hint, c);
  
         add(card);
- 
-        // ── Listeners ─────────────────────────────────────────────────── //
         loginBtn.addActionListener(e -> attemptLogin());
  
         KeyAdapter onEnter = new KeyAdapter() {
@@ -152,8 +139,6 @@ public class LoginPanel extends JPanel {
         errorLabel.setText(msg);
         errorLabel.setForeground(AppTheme.ACCENT_RED);
     }
- 
-    /** Called when the app switches back to login after logout. */
     public void reset() {
         usernameField.setText("");
         passwordField.setText("");

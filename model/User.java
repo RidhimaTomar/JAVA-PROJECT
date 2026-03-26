@@ -2,10 +2,6 @@ package model;
 
 import java.time.LocalDateTime;
 
-/**
- * Represents a system user — someone who logs in and uses the app.
- * Nothing clever here, just a plain data class.
- */
 public class User {
 
     public enum Role   { ADMIN, VERIFIER, VIEWER }
@@ -52,7 +48,7 @@ public class User {
     public LocalDateTime getLastLogin()                    { return lastLogin; }
     public void          setLastLogin(LocalDateTime t)     { this.lastLogin = t; }
 
-    @Override
+   
     public String toString() {
         return "User{id=" + userId + ", username='" + username + "', role=" + role + ", status=" + status + "}";
     }

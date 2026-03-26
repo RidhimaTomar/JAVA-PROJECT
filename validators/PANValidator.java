@@ -23,29 +23,23 @@ public class PANValidator extends BaseValidator {
     @Override
     public void validate(DocumentData doc, ValidationResult result) {
 
-        // Rule 1
         if (!requireField(doc, "panNumber", "PAN number", result)) return;
 
         String pan = doc.getField("panNumber").toUpperCase().trim();
 
-        // Rule 2
         if (!matchesPattern(pan, "[A-Z]{5}[0-9]{4}[A-Z]",
                 "PAN format is invalid. Expected format: ABCDE1234F (5 letters + 4 digits + 1 letter).",
                 result)) return;
 
-        // Rule 3 — 4th char (index 3) is the entity code
         char entityCode = pan.charAt(3);
         if (VALID_ENTITY_CODES.indexOf(entityCode) == -1) {
             result.addError("Invalid entity code '" + entityCode + "' at position 4 in PAN number.");
         }
 
-        // Rule 4
         requireField(doc, "name", "Holder name", result);
 
-        // Rule 5
         requireField(doc, "fathersName", "Father's name", result);
-
-        // Rule 6
+        
         requireField(doc, "dateOfBirth", "Date of birth", result);
     }
 }

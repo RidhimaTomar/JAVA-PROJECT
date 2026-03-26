@@ -10,11 +10,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
- 
-/**
- * The home screen after login.
- * Shows three stat cards (total / passed / failed) and a table of recent results.
- */
 public class DashboardPanel extends JPanel {
  
     private final DocumentRepository docRepo;
@@ -72,8 +67,6 @@ public class DashboardPanel extends JPanel {
         return p;
     }
  
-    // ── Stat cards ────────────────────────────────────────────────────────
- 
     private JPanel buildStatCards() {
         JPanel row = new JPanel(new GridLayout(1, 3, 16, 0));
         row.setBackground(AppTheme.BG_DARK);
@@ -107,8 +100,6 @@ public class DashboardPanel extends JPanel {
         return card;
     }
  
-    // ── Recent results table ──────────────────────────────────────────────
- 
     private JPanel buildTable() {
         JPanel p = new JPanel(new BorderLayout(0, 10));
         p.setBackground(AppTheme.BG_DARK);
@@ -126,7 +117,6 @@ public class DashboardPanel extends JPanel {
         JTable table = new JTable(tableModel);
         styleTable(table);
  
-        // colour-code the Status column
         table.getColumnModel().getColumn(3).setCellRenderer(new DefaultTableCellRenderer() {
             @Override public Component getTableCellRendererComponent(
                     JTable t, Object val, boolean sel, boolean foc, int row, int col) {
@@ -147,8 +137,6 @@ public class DashboardPanel extends JPanel {
         p.add(scroll, BorderLayout.CENTER);
         return p;
     }
- 
-    // ── Helpers ───────────────────────────────────────────────────────────
  
     public void refresh() {
         try {

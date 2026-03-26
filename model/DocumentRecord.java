@@ -2,9 +2,6 @@ package model;
 
 import java.time.LocalDateTime;
 
-/**
- * A row from the documents table — used for the history/records view.
- */
 public class DocumentRecord {
 
     private int           docId;

@@ -17,8 +17,6 @@ import javax.swing.*;
 public class Main {
  
     public static void main(String[] args) {
- 
-        // Check DB before opening the window — gives a clear error early
         if (!DBConnection.testConnection()) {
             JOptionPane.showMessageDialog(null,
                     "Could not connect to the database.\n\n" +

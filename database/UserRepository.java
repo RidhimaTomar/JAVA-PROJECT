@@ -8,15 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
  
-/**
- * All database operations that touch the users table live here.
- * Keeps SQL out of the service layer.
- */
 public class UserRepository {
  
     public void save(User u) throws SQLException {
-        // userId of 0 means the object was never persisted — always insert.
-        // userId > 0 means it came from the DB — update directly by ID.
+        
         if (u.getUserId() > 0) {
             update(u);
         } else {
@@ -24,7 +19,6 @@ public class UserRepository {
         }
     }
  
-    /** Only used for genuinely new users (userId == 0). */
  
     private void insert(User u) throws SQLException {
         String sql = "INSERT INTO users (username, password_hash, email, role, status, created_at, last_login) "
@@ -120,7 +114,7 @@ public class UserRepository {
         return list;
     }
  
-    // ── helpers ─────────────────────────────────────────────────────────
+    
  
     private User map(ResultSet rs) throws SQLException {
         User u = new User();

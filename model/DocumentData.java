@@ -3,11 +3,6 @@ package model;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Holds all the fields for a single document submission.
- * Think of it as a flexible key-value bag — validators pull
- * fields out of it by name.
- */
 public class DocumentData {
 
     private final String              docType;
@@ -36,6 +31,6 @@ public class DocumentData {
     public String getDocType() { return docType; }
 
     public Map<String, String> getAllFields() {
-        return new HashMap<>(fields);   // defensive copy
+        return new HashMap<>(fields);   
     }
 }

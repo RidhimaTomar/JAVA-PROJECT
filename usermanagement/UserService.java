@@ -9,22 +9,14 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
-/**
- * Handles everything user-related: login, logout, registration,
- * role changes, suspension, activation.
- */
 public class UserService {
 
     private final UserRepository userRepo;
-    private User currentUser;   // who is logged in right now
+    private User currentUser; 
 
     public UserService(UserRepository userRepo) {
         this.userRepo = userRepo;
     }
-
-    // ── Auth ──────────────────────────────────────────────────────────────
-
     public AuthResult login(String username, String password) {
         try {
             Optional<User> opt = userRepo.findByUsername(username);
@@ -67,8 +59,6 @@ public class UserService {
     }
 
     public User getCurrentUser() { return currentUser; }
-
-    // ── User management ───────────────────────────────────────────────────
 
     public OperationResult registerUser(String username, String password,
                                         String email, User.Role role) {
@@ -154,9 +144,7 @@ public class UserService {
             throw new RuntimeException("Could not fetch users: " + e.getMessage(), e);
         }
     }
-
-    // ── Internal ──────────────────────────────────────────────────────────
-
+    
     private void requireAdmin() {
         if (currentUser == null || currentUser.getRole() != User.Role.ADMIN) {
             throw new SecurityException("This action requires ADMIN privileges.");

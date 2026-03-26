@@ -9,35 +9,20 @@ import usermanagement.VerificationService;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
- 
-/**
- * The main application window.
- *
- * Layout:
- *   ┌──────────────────────────────────────────────────────────────┐
- *   │  Sidebar  │              Main content area                   │
- *   │           │  (swapped out via CardLayout)                    │
- *   └──────────────────────────────────────────────────────────────┘
- *
- * The sidebar contains nav buttons that swap the visible panel.
- * Everything wires together here — services, repos, panels.
- */
+
 public class MainWindow extends JFrame {
- 
-    // ── Services / repos ─────────────────────────────────────────────────
+
     private final UserRepository      userRepo    = new UserRepository();
     private final DocumentRepository  docRepo     = new DocumentRepository();
     private final UserService         userService = new UserService(userRepo);
     private final VerificationService verifyService = new VerificationService(docRepo, userService);
  
-    // ── Panels ────────────────────────────────────────────────────────────
     private LoginPanel          loginPanel;
     private DashboardPanel      dashboardPanel;
     private VerificationPanel   verifyPanel;
     private UserManagementPanel userMgmtPanel;
     private RecordsPanel        recordsPanel;
  
-    // ── Nav ───────────────────────────────────────────────────────────────
     private JPanel   mainArea;
     private JPanel   sidebar;
     private JButton  activeNavBtn;
@@ -80,10 +65,6 @@ public class MainWindow extends JFrame {
         setContentPane(mainArea);
     }
  
-    /**
-     * The "shell" is the full app layout (sidebar + content area).
-     * It is only shown after a successful login.
-     */
     private JPanel buildAppShell() {
         JPanel shell = new JPanel(new BorderLayout());
         shell.setBackground(AppTheme.BG_DARK);
@@ -92,7 +73,6 @@ public class MainWindow extends JFrame {
         return shell;
     }
  
-    // ── Sidebar ───────────────────────────────────────────────────────────
  
     private JPanel buildSidebar() {
         sidebar = new JPanel();
@@ -101,7 +81,6 @@ public class MainWindow extends JFrame {
         sidebar.setPreferredSize(new Dimension(220, 0));
         sidebar.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, AppTheme.BORDER_COLOR));
  
-        // brand
         JPanel brand = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 0));
         brand.setBackground(AppTheme.BG_SIDEBAR);
         brand.setBorder(new EmptyBorder(28, 0, 28, 0));
@@ -111,10 +90,8 @@ public class MainWindow extends JFrame {
         brand.add(logo);
         sidebar.add(brand);
  
-        // nav separator
         sidebar.add(separator());
  
-        // nav items
         addNavItem("⊞  Dashboard",   CARD_DASH);
         addNavItem("✔  Verify",       CARD_VERIFY);
         addNavItem("📋  Records",      CARD_RECORDS);
@@ -122,10 +99,7 @@ public class MainWindow extends JFrame {
  
         sidebar.add(Box.createVerticalGlue());
         sidebar.add(separator());
- 
-        // user info + logout at bottom
         sidebar.add(buildSidebarFooter());
- 
         return sidebar;
     }
  
@@ -202,7 +176,6 @@ public class MainWindow extends JFrame {
         return p;
     }
  
-    // ── Content area ──────────────────────────────────────────────────────
  
     private JPanel buildContentArea() {
         JPanel area = new JPanel(new CardLayout());
@@ -215,25 +188,19 @@ public class MainWindow extends JFrame {
     }
  
     private void showCard(String card) {
-        // find the content area panel inside the shell and switch it
         JPanel shell = (JPanel) mainArea.getComponent(1);
         JPanel content = (JPanel) shell.getComponent(1);
         ((CardLayout) content.getLayout()).show(content, card);
     }
- 
-    // ── Login / logout flow ───────────────────────────────────────────────
  
     private void showLogin() {
         ((CardLayout) mainArea.getLayout()).show(mainArea, CARD_LOGIN);
     }
  
     private void onLoginSuccess() {
-        // rebuild sidebar footer so it shows the logged-in user name
         rebuildSidebar();
         ((CardLayout) mainArea.getLayout()).show(mainArea, "SHELL");
         dashboardPanel.refresh();
-        // highlight dashboard nav button
-        // (we'll click the first nav item programmatically)
         Component[] comps = sidebar.getComponents();
         for (Component comp : comps) {
             if (comp instanceof JButton btn && btn.getText().contains("Dashboard")) {
@@ -250,9 +217,7 @@ public class MainWindow extends JFrame {
     }
  
     private void rebuildSidebar() {
-        // Update the user label in the footer
         if (userService.getCurrentUser() != null) {
-            // walk the sidebar to find the footer and update label
             for (Component c : sidebar.getComponents()) {
                 if (c instanceof JPanel footer) {
                     for (Component inner : footer.getComponents()) {

@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Collects every error and warning that came out of a validation run.
- * After all validators have run, call isPassed() to get the final verdict.
- */
 public class ValidationResult {
 
     private final List<String> errors   = new ArrayList<>();
@@ -33,12 +29,12 @@ public class ValidationResult {
         return Collections.unmodifiableList(warnings);
     }
 
-    /** First error message, or empty string if there are none. */
+   
     public String getFirstError() {
         return errors.isEmpty() ? "" : errors.get(0);
     }
 
-    @Override
+   
     public String toString() {
         if (isPassed()) return "[PASSED]";
         return "[FAILED] " + String.join(" | ", errors);

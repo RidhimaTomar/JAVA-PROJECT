@@ -1,8 +1,6 @@
 package usermanagement;
  
 import model.User;
- 
-/** Returned by login() — tells the caller whether it worked and who logged in. */
 public class AuthResult {
  
     private final boolean success;

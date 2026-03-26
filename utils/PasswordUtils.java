@@ -3,8 +3,7 @@ package utils;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
- 
-/** Simple SHA-256 password hashing. Nothing exotic. */
+
 public class PasswordUtils {
  
     private PasswordUtils() {}

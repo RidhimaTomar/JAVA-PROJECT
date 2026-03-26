@@ -11,32 +11,20 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-/**
- * The document verification screen.
- *
- * Left side  — document type selector + dynamic form fields
- * Right side — result card that lights up green or red after submission
- */
 public class VerificationPanel extends JPanel {
 
     private final VerificationService verifyService;
     private final UserService userService;
-
-    // form controls
     private JComboBox<String> docTypeCombo;
     private JPanel            fieldsPanel;
     private JButton           verifyBtn;
     private JButton           clearBtn;
-
-    // result area
     private JPanel resultCard;
     private JLabel resultIcon;
     private JLabel resultTitle;
     private JLabel resultDetail;
     private JLabel statusBar;
 
-    // fields for each document type  (label → field key)
     private static final Map<String, String[][]> DOC_FIELDS = new LinkedHashMap<>();
     static {
         DOC_FIELDS.put("AADHAAR", new String[][]{
@@ -108,13 +96,10 @@ public class VerificationPanel extends JPanel {
     }
 
     private JSplitPane buildBody() {
-        // IMPORTANT: buildResultSide() must run before buildFormSide(),
-        // because buildFormSide() triggers rebuildFields() → showNeutralResult()
-        // which needs resultIcon/resultTitle/resultDetail to already exist.
         JScrollPane formSide   = buildFormSide();
         JPanel      resultSide = buildResultSide();
 
-        rebuildFields();   // safe now — both sides are fully constructed
+        rebuildFields();
 
         JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, formSide, resultSide);
         split.setDividerLocation(480);
@@ -123,8 +108,6 @@ public class VerificationPanel extends JPanel {
         split.setBorder(null);
         return split;
     }
-
-    // ── Left: input form ──────────────────────────────────────────────────
 
     private JScrollPane buildFormSide() {
         JPanel outer = new JPanel(new BorderLayout());
@@ -138,8 +121,6 @@ public class VerificationPanel extends JPanel {
         c.fill    = GridBagConstraints.HORIZONTAL;
         c.weightx = 1;
         c.gridx   = 0;
-
-        // doc type picker
         JLabel typeLbl = AppTheme.formLabel("Document Type");
         c.gridy = 0; c.insets = new Insets(0, 0, 4, 0);
         card.add(typeLbl, c);
@@ -147,8 +128,6 @@ public class VerificationPanel extends JPanel {
         docTypeCombo = AppTheme.styledCombo(DOC_FIELDS.keySet().toArray(new String[0]));
         c.gridy = 1; c.insets = new Insets(0, 0, 18, 0);
         card.add(docTypeCombo, c);
-
-        // placeholder for dynamic fields
         fieldsPanel = new JPanel(new GridBagLayout());
         fieldsPanel.setOpaque(false);
         c.gridy = 2; c.insets = new Insets(0, 0, 18, 0); c.weighty = 1;
@@ -156,7 +135,6 @@ public class VerificationPanel extends JPanel {
         card.add(fieldsPanel, c);
         c.fill = GridBagConstraints.HORIZONTAL; c.weighty = 0;
 
-        // buttons
         JPanel btns = new JPanel(new GridLayout(1, 2, 10, 0));
         btns.setOpaque(false);
         verifyBtn = AppTheme.primaryButton("✔  Verify");
@@ -172,19 +150,12 @@ public class VerificationPanel extends JPanel {
         verifyBtn.addActionListener(e -> runVerification());
         clearBtn.addActionListener(e  -> clearForm());
 
-        // NOTE: rebuildFields() is NOT called here.
-        // It is called from buildBody() after buildResultSide() has run,
-        // so resultIcon/resultTitle/resultDetail are guaranteed to exist.
-
         JScrollPane sp = new JScrollPane(outer);
         sp.setBackground(AppTheme.BG_DARK);
         sp.getViewport().setBackground(AppTheme.BG_DARK);
         sp.setBorder(null);
         return sp;
     }
-
-    // ── Right: result card ────────────────────────────────────────────────
-
     private JPanel buildResultSide() {
         JPanel outer = new JPanel(new BorderLayout());
         outer.setBackground(AppTheme.BG_DARK);
@@ -230,8 +201,6 @@ public class VerificationPanel extends JPanel {
         return p;
     }
 
-    // ── Dynamic fields ────────────────────────────────────────────────────
-
     private void rebuildFields() {
         fieldsPanel.removeAll();
         String docType = (String) docTypeCombo.getSelectedItem();
@@ -249,7 +218,7 @@ public class VerificationPanel extends JPanel {
             fieldsPanel.add(lbl, c);
 
             JTextField field = AppTheme.styledField(20);
-            field.setName(spec[i][1]);   // field key stored as component name
+            field.setName(spec[i][1]);
             addPlaceholder(field, spec[i][0].replace(" *", ""));
             c.gridy = i * 2 + 1; c.insets = new Insets(0, 0, 12, 0);
             fieldsPanel.add(field, c);
@@ -278,9 +247,6 @@ public class VerificationPanel extends JPanel {
             }
         });
     }
-
-    // ── Verification logic ────────────────────────────────────────────────
-
     private void runVerification() {
         String docType = (String) docTypeCombo.getSelectedItem();
         DocumentData data = new DocumentData(docType);
@@ -289,7 +255,6 @@ public class VerificationPanel extends JPanel {
             if (comp instanceof JTextField field) {
                 String key   = field.getName();
                 String value = field.getText().trim();
-                // skip placeholder text
                 if (!value.isEmpty() && !value.equals(getPlaceholder(field))) {
                     data.addField(key, value);
                 }
@@ -300,10 +265,10 @@ public class VerificationPanel extends JPanel {
         setStatus("Verifying…");
 
         new SwingWorker<VerifyResult, Void>() {
-            @Override protected VerifyResult doInBackground() {
+            protected VerifyResult doInBackground() {
                 return verifyService.verify(data);
             }
-            @Override protected void done() {
+               protected void done() {
                 try {
                     VerifyResult r = get();
                     showResult(r);

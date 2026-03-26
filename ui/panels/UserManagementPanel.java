@@ -11,12 +11,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
- 
-/**
- * Admin-only panel for managing system users.
- * Left: filterable user table + action buttons.
- * Right: register-new-user form.
- */
 public class UserManagementPanel extends JPanel {
  
     private final UserService userService;
@@ -80,8 +74,6 @@ public class UserManagementPanel extends JPanel {
         return split;
     }
  
-    // ── Left: user table ──────────────────────────────────────────────────
- 
     private JPanel buildTablePanel() {
         JPanel p = new JPanel(new BorderLayout());
         p.setBackground(AppTheme.BG_PANEL);
@@ -94,8 +86,6 @@ public class UserManagementPanel extends JPanel {
  
         userTable = new JTable(tableModel);
         styleTable(userTable);
- 
-        // colour-code Status
         userTable.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
             @Override public Component getTableCellRendererComponent(
                     JTable t, Object val, boolean sel, boolean foc, int row, int col) {
@@ -112,8 +102,7 @@ public class UserManagementPanel extends JPanel {
                 return this;
             }
         });
- 
-        // colour-code Role
+
         userTable.getColumnModel().getColumn(3).setCellRenderer(new DefaultTableCellRenderer() {
             @Override public Component getTableCellRendererComponent(
                     JTable t, Object val, boolean sel, boolean foc, int row, int col) {
@@ -134,8 +123,7 @@ public class UserManagementPanel extends JPanel {
         JScrollPane scroll = new JScrollPane(userTable);
         scroll.getViewport().setBackground(AppTheme.BG_TABLE_ODD);
         scroll.setBorder(BorderFactory.createLineBorder(AppTheme.BORDER_COLOR, 1));
- 
-        // action buttons row
+
         JPanel actions = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 10));
         actions.setOpaque(false);
  
@@ -155,8 +143,6 @@ public class UserManagementPanel extends JPanel {
         p.add(actions, BorderLayout.SOUTH);
         return p;
     }
- 
-    // ── Right: register form ──────────────────────────────────────────────
  
     private JPanel buildFormPanel() {
         JPanel outer = new JPanel(new BorderLayout());
@@ -219,8 +205,6 @@ public class UserManagementPanel extends JPanel {
         p.add(statusBar);
         return p;
     }
- 
-    // ── Actions ───────────────────────────────────────────────────────────
  
     private void registerUser() {
         String username = newUsername.getText().trim();
@@ -295,8 +279,6 @@ public class UserManagementPanel extends JPanel {
             setStatus("✘  Admin only.", AppTheme.ACCENT_RED);
         }
     }
- 
-    // ── Helpers ───────────────────────────────────────────────────────────
  
     public void refresh() {
         tableModel.setRowCount(0);

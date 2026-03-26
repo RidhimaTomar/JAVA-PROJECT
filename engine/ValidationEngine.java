@@ -8,10 +8,7 @@ import validators.BirthCertificateValidator;
 import validators.DrivingLicenseValidator;
 import validators.PANValidator;
 
-/**
- * Central entry point for all validation.
- * You hand it a DocumentData, it picks the right validator and runs it.
- */
+
 public class ValidationEngine {
 
     public ValidationResult validate(DocumentData doc) {

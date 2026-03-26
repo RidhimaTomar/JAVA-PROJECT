@@ -1,8 +1,4 @@
--- ============================================================
---  DocVerify – Database Schema
---  Run this once before launching the application.
---  Database: MySQL 8+
--- ============================================================
+
 
 CREATE DATABASE IF NOT EXISTS docverify_db
     CHARACTER SET utf8mb4
@@ -10,7 +6,6 @@ CREATE DATABASE IF NOT EXISTS docverify_db
 
 USE docverify_db;
 
--- ── Users ────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS users (
     user_id       INT AUTO_INCREMENT PRIMARY KEY,
     username      VARCHAR(50)  NOT NULL UNIQUE,
@@ -22,7 +17,6 @@ CREATE TABLE IF NOT EXISTS users (
     last_login    DATETIME
 );
 
--- Default admin  (password = Admin@123)
 INSERT IGNORE INTO users (username, password_hash, email, role, status)
 VALUES (
     'admin',
@@ -32,7 +26,6 @@ VALUES (
     'ACTIVE'
 );
 
--- ── Documents ────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS documents (
     doc_id          INT AUTO_INCREMENT PRIMARY KEY,
     submitted_by    INT          NOT NULL,
@@ -45,7 +38,6 @@ CREATE TABLE IF NOT EXISTS documents (
     FOREIGN KEY (submitted_by) REFERENCES users(user_id)
 );
 
--- ── Verification Attempts ────────────────────────────────────
 CREATE TABLE IF NOT EXISTS verification_attempts (
     attempt_id     INT AUTO_INCREMENT PRIMARY KEY,
     doc_id         INT  NOT NULL,
@@ -56,7 +48,6 @@ CREATE TABLE IF NOT EXISTS verification_attempts (
     FOREIGN KEY (verified_by) REFERENCES users(user_id)
 );
 
--- ── Verification Results ─────────────────────────────────────
 CREATE TABLE IF NOT EXISTS verification_results (
     result_id        INT AUTO_INCREMENT PRIMARY KEY,
     attempt_id       INT NOT NULL,
@@ -69,7 +60,6 @@ CREATE TABLE IF NOT EXISTS verification_results (
     FOREIGN KEY (doc_id)     REFERENCES documents(doc_id)
 );
 
--- ── Audit Log ────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS audit_log (
     log_id     INT AUTO_INCREMENT PRIMARY KEY,
     action     VARCHAR(50)  NOT NULL,

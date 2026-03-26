@@ -11,11 +11,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.util.List;
- 
-/**
- * Shows every document that has ever been submitted for verification.
- * Includes a search bar that filters the table in real time.
- */
+
 public class RecordsPanel extends JPanel {
  
     private final DocumentRepository docRepo;
@@ -55,7 +51,6 @@ public class RecordsPanel extends JPanel {
         titleBlock.add(title);
         titleBlock.add(sub);
  
-        // search box
         JTextField search = AppTheme.styledField(24);
         search.setPreferredSize(new Dimension(260, 36));
         addPlaceholder(search, "Search by name, type, document #…");
@@ -88,8 +83,7 @@ public class RecordsPanel extends JPanel {
         sorter = new TableRowSorter<>(tableModel);
         table.setRowSorter(sorter);
         styleTable(table);
- 
-        // colour "Locked" column
+   
         table.getColumnModel().getColumn(6).setCellRenderer(new DefaultTableCellRenderer() {
             @Override public Component getTableCellRendererComponent(
                     JTable t, Object val, boolean sel, boolean foc, int row, int col) {
@@ -121,8 +115,6 @@ public class RecordsPanel extends JPanel {
         p.add(statusBar);
         return p;
     }
- 
-    // ── Helpers ───────────────────────────────────────────────────────────
  
     public void refresh() {
         tableModel.setRowCount(0);

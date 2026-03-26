@@ -5,11 +5,6 @@ import database.DocumentRepository;
 import engine.ValidationEngine;
 import model.DocumentData;
 import model.ValidationResult;
-
-/**
- * Orchestrates the full document verification flow:
- *   save doc → check lock → run validation → persist result → lock if needed
- */
 public class VerificationService {
 
     private static final int MAX_FAILURES_BEFORE_LOCK = 3;
@@ -24,10 +19,6 @@ public class VerificationService {
         this.userService = userService;
     }
 
-    /**
-     * Runs the full verification pipeline for the given document data.
-     * Returns a VerifyResult describing what happened.
-     */
     public VerifyResult verify(DocumentData doc) {
 
         if (userService.getCurrentUser() == null) {
@@ -37,7 +28,6 @@ public class VerificationService {
         int userId = userService.getCurrentUser().getUserId();
 
         try {
-            // 1. Persist the document submission
             String dob = doc.hasField("dateOfBirth") ? doc.getField("dateOfBirth")
                        : doc.hasField("dob")         ? doc.getField("dob")
                        : "";
@@ -55,27 +45,19 @@ public class VerificationService {
             int docId = docRepo.saveDocument(userId, doc.getDocType(), docNumber, holderName, dob);
             if (docId == -1) return VerifyResult.failure("Failed to save document to database.");
 
-            // 2. Bail out early if previously locked
             if (docRepo.isLocked(docId)) {
                 return VerifyResult.failure("This document is locked due to too many failed attempts.");
             }
-
-            // 3. Run validation rules
             ValidationResult vr = engine.validate(doc);
 
-            // 4. Log the attempt
             int attemptId = docRepo.logAttempt(docId, userId);
             if (attemptId == -1) return VerifyResult.failure("Failed to log verification attempt.");
-
-            // 5. Persist the result
             String status = vr.isPassed() ? "PASSED" : "FAILED";
             String reason = vr.isPassed() ? null : vr.getFirstError();
             docRepo.saveResult(attemptId, docId, status, reason, null);
 
             AuditLogger.log("VERIFY_" + status, doc.getDocType(),
                     "Doc=" + docNumber + ", By=userId:" + userId);
-
-            // 6. Lock document if it has failed too many times
             if (!vr.isPassed()) {
                 int failCount = docRepo.getFailedCount(docId);
                 if (failCount >= MAX_FAILURES_BEFORE_LOCK) {
@@ -93,9 +75,6 @@ public class VerificationService {
             return VerifyResult.failure("Unexpected error: " + e.getMessage());
         }
     }
-
-    // ── Inner result class ────────────────────────────────────────────────
-
     public static class VerifyResult {
 
         public enum State { PASSED, FAILED, LOCKED, ERROR }
