@@ -15,7 +15,7 @@ public class AuditLogger {
     
         String sql = "INSERT INTO audit_log (action, target, details) VALUES (?, ?, ?)";
         try (Connection c = DBConnection.get();
-             PreparedStatement ps = c.prepareStatement(sql1)) {
+             PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, action);
             ps.setString(2, target);
             ps.setString(3, details);
