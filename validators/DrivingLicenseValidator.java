@@ -1,0 +1,109 @@
+package validators;
+
+import model.DocumentData;
+import model.ValidationResult;
+import rules.BaseValidator;
+
+/**
+ * Validates Indian Driving License submissions.
+ *
+ * Rules:
+ *   1.  License number must be present
+ *   2.  Format: SS-RR-YYYY-NNNNNNN  (state code, RTO number, year, serial)
+ *   3.  State code must be a valid Indian two-letter state code
+ *   4.  Name must be present
+ *   5.  Date of birth must be present and in DD/MM/YYYY format
+ *   6.  Holder must be at least 18 years old at time of issue
+ *   7.  Issue date must be present and in DD/MM/YYYY format
+ *   8.  Expiry date must be present and in DD/MM/YYYY format
+ *   9.  Expiry year must be after issue year
+ *   10. Vehicle class must be a recognised Indian DL category
+ *   11. Address must be present
+ */
+public class DrivingLicenseValidator extends BaseValidator {
+
+    private static final String VALID_STATE_CODES =
+        "AP AR AS BR CG DL GA GJ HR HP JH JK KA KL LA MP MH MN ML MZ NL OD PY PB RJ SK TN TS TR UP UK WB AN CH DD DN LD";
+
+    private static final String VALID_VEHICLE_CLASSES =
+        "LMV MCWG MCWOG HMV HPMV HGMV TR LMV-NT MGV";
+
+    @Override
+    public void validate(DocumentData doc, ValidationResult result) {
+
+        // Rule 1
+        if (!requireField(doc, "licenseNumber", "License number", result)) return;
+
+        String raw   = doc.getField("licenseNumber").toUpperCase().replaceAll("\\s+", "");
+        // Normalise — allow both MH122019123456 and MH-12-2019-1234567
+        String clean = raw.replaceAll("-", "");
+
+        // Rule 2 — SS RR YYYY NNNNNNN = 2+2+4+7 = 15 chars without dashes
+        if (!matchesPattern(clean, "[A-Z]{2}[0-9]{2}[0-9]{4}[0-9]{7}",
+                "License number format is invalid. Expected: SS-RR-YYYY-NNNNNNN (e.g. MH-12-2019-1234567).",
+                result)) return;
+
+        // Rule 3 — state code
+        String stateCode = clean.substring(0, 2);
+        if (!VALID_STATE_CODES.contains(stateCode)) {
+            result.addError("'" + stateCode + "' is not a valid Indian state/UT code.");
+        }
+
+        // Rule 4
+        requireField(doc, "name", "Holder name", result);
+
+        // Rule 5
+        if (!requireField(doc, "dateOfBirth", "Date of birth", result)) return;
+        String dob = doc.getField("dateOfBirth");
+        if (!matchesPattern(dob, "\\d{2}/\\d{2}/\\d{4}",
+                "Date of birth must be in DD/MM/YYYY format.", result)) return;
+
+        // Rule 6 — age check using issue year from license number
+        try {
+            int issueYear = Integer.parseInt(clean.substring(4, 8));
+            int birthYear = Integer.parseInt(dob.split("/")[2]);
+            if (issueYear - birthYear < 18) {
+                result.addError("Holder must be at least 18 years old at time of license issuance.");
+            }
+        } catch (NumberFormatException e) {
+            result.addWarning("Could not verify age — check license number and DOB formats.");
+        }
+
+        // Rule 7
+        if (!requireField(doc, "issueDate", "Issue date", result)) return;
+        String issueDate = doc.getField("issueDate");
+        if (!matchesPattern(issueDate, "\\d{2}/\\d{2}/\\d{4}",
+                "Issue date must be in DD/MM/YYYY format.", result)) return;
+
+        // Rule 8
+        if (!requireField(doc, "expiryDate", "Expiry date", result)) return;
+        String expiryDate = doc.getField("expiryDate");
+        if (!matchesPattern(expiryDate, "\\d{2}/\\d{2}/\\d{4}",
+                "Expiry date must be in DD/MM/YYYY format.", result)) return;
+
+        // Rule 9 — expiry must be after issue
+        try {
+            int iy = Integer.parseInt(issueDate.split("/")[2]);
+            int ey = Integer.parseInt(expiryDate.split("/")[2]);
+            if (ey <= iy) {
+                result.addError("Expiry date must be after the issue date.");
+            }
+        } catch (NumberFormatException e) {
+            result.addWarning("Could not compare issue and expiry dates — please check formats.");
+        }
+
+        // Rule 10 — vehicle class
+        if (!requireField(doc, "vehicleClass", "Vehicle class", result)) return;
+        String vc = doc.getField("vehicleClass").toUpperCase().trim();
+        boolean validClass = false;
+        for (String cls : VALID_VEHICLE_CLASSES.split(" ")) {
+            if (cls.equals(vc)) { validClass = true; break; }
+        }
+        if (!validClass) {
+            result.addError("Invalid vehicle class '" + vc + "'. Valid: LMV, MCWG, MCWOG, HMV, HPMV, TR, etc.");
+        }
+
+        // Rule 11
+        requireField(doc, "address", "Address", result);
+    }
+}
