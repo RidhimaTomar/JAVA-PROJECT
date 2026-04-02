@@ -4,22 +4,6 @@ import model.DocumentData;
 import model.ValidationResult;
 import rules.BaseValidator;
 
-/**
- * Validates Indian Driving License submissions.
- *
- * Rules:
- *   1.  License number must be present
- *   2.  Format: SS-RR-YYYY-NNNNNNN  (state code, RTO number, year, serial)
- *   3.  State code must be a valid Indian two-letter state code
- *   4.  Name must be present
- *   5.  Date of birth must be present and in DD/MM/YYYY format
- *   6.  Holder must be at least 18 years old at time of issue
- *   7.  Issue date must be present and in DD/MM/YYYY format
- *   8.  Expiry date must be present and in DD/MM/YYYY format
- *   9.  Expiry year must be after issue year
- *   10. Vehicle class must be a recognised Indian DL category
- *   11. Address must be present
- */
 public class DrivingLicenseValidator extends BaseValidator {
 
     private static final String VALID_STATE_CODES =
