@@ -9,7 +9,7 @@ USE docverify_db;
 CREATE TABLE IF NOT EXISTS users (
     user_id       INT AUTO_INCREMENT PRIMARY KEY,
     username      VARCHAR(50)  NOT NULL UNIQUE,
-    password_hash VARCHAR(64)  NOT NULL,          -- SHA-256 hex
+    password_hash VARCHAR(64)  NOT NULL,          
     email         VARCHAR(100) NOT NULL UNIQUE,
     role          ENUM('ADMIN','VERIFIER','VIEWER') NOT NULL DEFAULT 'VIEWER',
     status        ENUM('ACTIVE','INACTIVE','SUSPENDED') NOT NULL DEFAULT 'ACTIVE',
