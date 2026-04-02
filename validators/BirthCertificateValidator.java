@@ -4,18 +4,6 @@ import model.DocumentData;
 import model.ValidationResult;
 import rules.BaseValidator;
 
-/**
- * Validates Birth Certificate submissions.
- *
- * Rules:
- *   1. Certificate number must be present
- *   2. Child's name must be present
- *   3. Date of birth must be present and in DD/MM/YYYY format
- *   4. Father's name must be present
- *   5. Mother's name must be present
- *   6. Place of birth must be present
- *   7. Issuing authority must be present
- */
 public class BirthCertificateValidator extends BaseValidator {
 
     @Override
