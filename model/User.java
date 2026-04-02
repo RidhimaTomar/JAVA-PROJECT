@@ -29,8 +29,6 @@ public class User {
         this.role         = role;
     }
 
-    // ── Getters & Setters ─────────────────────────────────────────────────
-
     public int           getUserId()                       { return userId; }
     public void          setUserId(int id)                 { this.userId = id; }
     public String        getUsername()                     { return username; }
