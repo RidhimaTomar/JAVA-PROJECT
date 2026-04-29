@@ -6,7 +6,6 @@ import rules.BaseValidator;
 
 public class BirthCertificateValidator extends BaseValidator {
 
-    @Override
     public void validate(DocumentData doc, ValidationResult result) {
 
         requireField(doc, "certificateNumber", "Certificate number", result);
