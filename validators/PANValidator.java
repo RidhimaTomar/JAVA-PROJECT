@@ -7,7 +7,7 @@ import rules.BaseValidator;
 public class PANValidator extends BaseValidator {
     private static final String VALID_ENTITY_CODES = "PCHABGJLFT";
 
-    @Override
+  
     public void validate(DocumentData doc, ValidationResult result) {
 
         if (!requireField(doc, "panNumber", "PAN number", result)) return;
